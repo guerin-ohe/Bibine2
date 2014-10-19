@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="jquery.mobile-1.4.4.min.css">
+<style>
+.txtwrapper{
+    color: darkgreen;
+    font-size: 30px;
+} 
+</style>
+<script src="jquery-1.11.1.min.js"></script>
+<script src="jquery.mobile-1.4.4.min.js"></script>
+<script>
+    var t = function (v, p, k, m) {
+        return (v * p * 0.8) / (k * m);
+    }
+
+    var getVolume = function() {
+        return $("#v").val() * 10;
+    }
+    
+    var setVolume = function(v) {
+        $("#v").val(v);
+    }
+    
+    var getDegree = function() {
+        return $("#p").val() / 100;
+    }
+    
+    var setDegree = function(p) {
+        $("#p").val(p);
+    }
+    
+    var getMasse = function() {
+        return $("#m").val();
+    }
+    
+    var setMasse = function(m) {
+        $("#m").val(m);
+    }
+    
+    var getCoefDiff = function() {
+        if ($('input:radio[name=gender]:checked').val() == 'male')
+            return 0.7;
+        else
+            return 0.6;
+    }
+    
+    var setFemale = function() {
+        $("#female").prop("checked", true);
+    }
+    
+    var refreshDisplay = function () {
+        var tt = t(getVolume(), getDegree(), getCoefDiff(), getMasse()).toFixed(2);
+        if (tt > 0.5)
+            $("#display").css("color", "red");
+        else
+            $("#display").css("color", "darkgreen");
+        $("#display").text(tt);
+    }
+
+    var alertOnChange = function () {
+        alert('clicked : ' + getCoefDiff());
+    }
+    
+    var initAndRefresh = function() {
+        // raz
+        setVolume(0);
+        setDegree(0);
+        setMasse(1);
+        setFemale();
+        
+        // refresh display
+        $("#v").slider('refresh');
+        $("#p").slider('refresh');
+        $("#m").slider('refresh');
+        $("#v").slider('refresh');
+        $('input:radio[name=gender]').checkboxradio("refresh");
+        $("#display").text("0");
+    }
+
+    var onReady = function () {
+        
+        // init
+        initAndRefresh();
+        
+        // add event handler
+        $("#calc").click(refreshDisplay);
+        $("#raz").click(initAndRefresh);
+        $("#v").change(refreshDisplay);
+        $("#p").change(refreshDisplay);
+        $("#m").change(refreshDisplay);
+        //$('input[type=radio][name=gender]').change(alertOnChange);
+        $('input[type=radio][name=gender]').change(refreshDisplay);
+    }
+
+    $(document).ready(onReady);
+
+</script>
+</head>
+<body>
+
+    <div data-role="page"  data-theme="b">
+
+        <div data-role="header">
+            <h1>Bibine</h1>
+        </div>
+
+        <div data-role="main" class="ui-content">
+
+            <div class="ui-field-contain">
+                Taux alcoolemie (g/l):<br/>
+                <div id="display" class="txtwrapper" />
+            </div>
+
+            <div class="ui-field-contain">
+                
+                    <label for="v">Volume de boisson ing&eacute;r&eacute; (cl):</label>
+                    <input type="range" name="v" id="v" min="0" max="200" data-show-value="true">
+                    <label for="p">Degr&eacute;e d'alcool&eacute;mie de la boisson:</label>
+                    <input type="range" name="p" id="p" min="0" max="70" data-show-value="true">
+                    
+            </div>
+            <div class="ui-field-contain">
+            
+                <label for="m">Masse (kg):</label>
+                <input type="range" name="m" id="m" min="0" max="120" data-show-value="true">
+
+                <div data-role="controlgroup" data-type="horizontal">
+                    Genre:<br/>
+                    <label for="male">Homme</label>
+                    <input type="radio" name="gender" id="male" value="male">
+                    <label for="female">Femme</label>
+                    <input type="radio" name="gender" id="female" value="female"> 
+                </div>
+            </div>
+            
+            <div class="ui-field-contain">
+                <div data-role="controlgroup" data-type="horizontal">
+                    <button class="ui-btn" id="calc">Calculer</button>
+                    <button class="ui-btn" id="raz">Raz</button>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
